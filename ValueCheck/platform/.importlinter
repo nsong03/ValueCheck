@@ -1,0 +1,38 @@
+[importlinter]
+root_package = equity
+include_external_packages = True
+
+# Hexagonal architecture, enforced (CLAUDE.md prime directive #1, BUILD_SPEC section 4).
+# A "layers" contract forbids any lower layer from importing a higher one.
+# Top -> bottom (higher may import lower, never the reverse):
+#
+#   api          -- FastAPI; imports application. Nothing imports api.
+#   application  -- use-cases + composition root; imports adapters/ports/domain.
+#   adapters     -- implement ports; do all I/O; import ports + domain.
+#   ports        -- interfaces (Protocol/ABC); import domain only.
+#   domain       -- PURE. Imports nothing internal outward.
+#
+# The forbidden edges this encodes: domain -> anything internal; ports ->
+# adapters/application/api; adapters -> application/api; application -> api.
+[importlinter:contract:hexagonal-layers]
+name = Hexagonal layers (inward-only dependencies)
+type = layers
+layers =
+    equity.api
+    equity.application
+    equity.adapters
+    equity.ports
+    equity.domain
+
+# Belt-and-suspenders: the domain must not import any adapter/api/application
+# module even indirectly, reinforcing prime directive #2 (pure domain).
+[importlinter:contract:domain-purity]
+name = Domain is pure (no inward imports of outer layers)
+type = forbidden
+source_modules =
+    equity.domain
+forbidden_modules =
+    equity.ports
+    equity.adapters
+    equity.application
+    equity.api

@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+
+# Tooling caches
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Env & secrets
+.env
+*.local
+
+# Generated artifacts
+openapi.json
+
+# Local data
+*.db
+*.sqlite
+*.sqlite3
