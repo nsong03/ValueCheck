@@ -19,14 +19,18 @@ from equity.adapters.persistence.sqlite import (
     SQLiteTagRepo,
     SQLiteValuationRepo,
 )
+from equity.adapters.search.fts5 import FTS5SearchIndex
+from equity.application.graph_service import GraphService
 from equity.application.ingestion_service import IngestionService
 from equity.application.research_service import ResearchService
+from equity.application.search_service import SearchService
 from equity.application.valuation_service import ValuationService
 from equity.config import Settings, get_settings
 from equity.logging import get_logger
 from equity.ports.filings import FilingsProvider
 from equity.ports.market import MarketDataProvider
 from equity.ports.repository import CompanyRepo, NoteRepo, TagRepo, ValuationRepo
+from equity.ports.search import SearchIndex
 
 log = get_logger(__name__)
 
@@ -43,9 +47,12 @@ class Container:
     tags: TagRepo
     filings: FilingsProvider
     market: MarketDataProvider
+    search_index: SearchIndex
     ingestion: IngestionService
     valuation: ValuationService
     research: ResearchService
+    search: SearchService
+    graph: GraphService
 
 
 def build_container(
@@ -76,6 +83,9 @@ def build_container(
     ingestion = IngestionService(companies, filings, market)
     valuation = ValuationService(ingestion, valuations)
     research = ResearchService(notes, tags)
+    search_index = FTS5SearchIndex(db)
+    search = SearchService(search_index)
+    graph = GraphService(companies, notes)
 
     log.info(
         "container.built",
@@ -95,4 +105,7 @@ def build_container(
         ingestion=ingestion,
         valuation=valuation,
         research=research,
+        search_index=search_index,
+        search=search,
+        graph=graph,
     )

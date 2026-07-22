@@ -68,6 +68,29 @@ export function useSaveNote(ticker: string) {
   });
 }
 
+// ---- search + graph -------------------------------------------------------
+
+/** Runs when `query` is non-empty (the UI submits explicitly). */
+export function useSearch(query: string | null) {
+  return useQuery({
+    queryKey: ["search", query],
+    queryFn: () => api.search(query as string),
+    enabled: query !== null && query.trim().length > 0,
+    staleTime: 30_000,
+    retry: false,
+  });
+}
+
+export function useGraph(filters: { sector?: string; tickers?: string[] }) {
+  return useQuery({
+    queryKey: ["graph", filters],
+    queryFn: () => api.graph(filters),
+    placeholderData: keepPreviousData,
+    staleTime: 30_000,
+    retry: false,
+  });
+}
+
 export function useDeleteNote(ticker: string) {
   const queryClient = useQueryClient();
   return useMutation({

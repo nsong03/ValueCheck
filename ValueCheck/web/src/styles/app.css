@@ -547,3 +547,115 @@ button.ghost.danger {
 .tag-suggestions button:hover {
   background: var(--accent-soft);
 }
+
+/* ---- view tabs ---- */
+.view-tabs {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.tab {
+  background: transparent;
+  color: var(--subtle);
+  border: 1px solid transparent;
+}
+
+.tab.active {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: var(--accent-soft);
+}
+
+/* ---- search panel ---- */
+.search-panel {
+  padding: 0.75rem 1.25rem;
+}
+
+.search-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.search-form input {
+  flex: 1;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.search-results {
+  margin-top: 0.6rem;
+}
+
+.ticker-pill {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: none;
+  border-radius: 999px;
+  padding: 0.15rem 0.7rem;
+  margin: 0 0.25rem;
+  font-weight: 600;
+}
+
+.hit-list {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  font-size: 0.87rem;
+  line-height: 1.8;
+}
+
+.snippet {
+  color: var(--subtle);
+}
+
+/* ---- graph ---- */
+.graph-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.graph-controls h3 {
+  margin: 0;
+  flex: 1;
+}
+
+.graph-controls input[type="text"],
+.graph-controls input:not([type]) {
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.graph-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--subtle);
+}
+
+.graph-canvas {
+  margin-top: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.legend-dot.company {
+  background: #1d4ed8;
+}
+
+.legend-dot.tag {
+  background: #f59e0b;
+}

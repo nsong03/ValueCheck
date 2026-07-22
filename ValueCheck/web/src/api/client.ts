@@ -19,6 +19,11 @@ export type NoteIn = components["schemas"]["NoteIn"];
 export type NoteUpdate = components["schemas"]["NoteUpdate"];
 export type NoteOut = components["schemas"]["NoteOut"];
 export type TagsOut = components["schemas"]["TagsOut"];
+export type SearchResultOut = components["schemas"]["SearchResultOut"];
+export type SearchHitOut = components["schemas"]["SearchHitOut"];
+export type GraphOut = components["schemas"]["GraphOut"];
+export type GraphNodeOut = components["schemas"]["GraphNodeOut"];
+export type GraphEdgeOut = components["schemas"]["GraphEdgeOut"];
 
 const BASE: string = import.meta.env.VITE_API_BASE ?? "/api";
 
@@ -86,4 +91,14 @@ export const api = {
   deleteNote: (id: number) => request<void>(`/notes/${id}`, { method: "DELETE" }),
 
   listTags: () => request<TagsOut>("/tags"),
+
+  search: (q: string) => request<SearchResultOut>(`/search?q=${encodeURIComponent(q)}`),
+
+  graph: (filters: { sector?: string; tickers?: string[] } = {}) => {
+    const params = new URLSearchParams();
+    if (filters.sector) params.set("sector", filters.sector);
+    for (const t of filters.tickers ?? []) params.append("tickers", t);
+    const qs = params.toString();
+    return request<GraphOut>(`/graph${qs ? `?${qs}` : ""}`);
+  },
 };

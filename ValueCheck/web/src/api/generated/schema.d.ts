@@ -102,6 +102,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/graph": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Graph
+         * @description Nodes+edges for the research graph, optionally filtered.
+         */
+        get: operations["graph_graph_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -150,6 +170,26 @@ export interface paths {
         post?: never;
         /** Delete Note */
         delete: operations["delete_note_notes__note_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Search
+         * @description Full-text search over note titles/bodies; returns impacted tickers.
+         */
+        get: operations["search_search_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -320,6 +360,33 @@ export interface components {
             /** Tickers */
             tickers: string[];
         };
+        /** GraphEdgeOut */
+        GraphEdgeOut: {
+            /** Source */
+            source: string;
+            /** Target */
+            target: string;
+            /** Weight */
+            weight: number;
+        };
+        /** GraphNodeOut */
+        GraphNodeOut: {
+            /** Id */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Label */
+            label: string;
+            /** Sector */
+            sector?: string | null;
+        };
+        /** GraphOut */
+        GraphOut: {
+            /** Edges */
+            edges: components["schemas"]["GraphEdgeOut"][];
+            /** Nodes */
+            nodes: components["schemas"]["GraphNodeOut"][];
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -438,6 +505,26 @@ export interface components {
             revenue: number;
             /** Year */
             year: number;
+        };
+        /** SearchHitOut */
+        SearchHitOut: {
+            /** Note Id */
+            note_id: number;
+            /** Snippet */
+            snippet: string;
+            /** Ticker */
+            ticker: string;
+            /** Title */
+            title: string;
+        };
+        /** SearchResultOut */
+        SearchResultOut: {
+            /** Hits */
+            hits: components["schemas"]["SearchHitOut"][];
+            /** Impacted Tickers */
+            impacted_tickers: string[];
+            /** Query */
+            query: string;
         };
         /**
          * SensitivityOut
@@ -747,6 +834,40 @@ export interface operations {
             };
         };
     };
+    graph_graph_get: {
+        parameters: {
+            query?: {
+                /** @description Exact sector filter */
+                sector?: string | null;
+                /** @description Restrict to these tickers (e.g. a search's impacted set) */
+                tickers?: string[] | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GraphOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     health_health_get: {
         parameters: {
             query?: never;
@@ -883,6 +1004,39 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    search_search_get: {
+        parameters: {
+            query: {
+                /** @description Event/free text */
+                q: string;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchResultOut"];
+                };
             };
             /** @description Validation Error */
             422: {
