@@ -74,6 +74,28 @@ class TestRoundTrip:
         assert loaded.warnings == result.warnings
 
 
+class TestNanRoundTrip:
+    def test_nan_headline_values_survive_as_nan(
+        self,
+        company_repo: SQLiteCompanyRepo,
+        valuation_repo: SQLiteValuationRepo,
+        demo_fin: CompanyFinancials,
+    ) -> None:
+        """No shares/price -> NaN per-share/upside; stored as NULL, restored as NaN."""
+        demo_fin.shares_out = 0.0
+        demo_fin.price = 0.0
+        company_repo.save(demo_fin)
+        result = DCF(demo_fin).value()
+        assert result.fair_value_per_share != result.fair_value_per_share  # NaN
+
+        record = valuation_repo.save(result)
+        loaded = valuation_repo.get(record.id)
+        assert loaded is not None
+        assert loaded.fair_value_per_share != loaded.fair_value_per_share  # still NaN
+        assert loaded.upside != loaded.upside
+        assert loaded.enterprise_value == result.enterprise_value  # real number intact
+
+
 class TestListing:
     def test_list_for_newest_first(
         self, valuation_repo: SQLiteValuationRepo, saved_company: CompanyFinancials

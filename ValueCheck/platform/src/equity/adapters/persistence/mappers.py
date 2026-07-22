@@ -105,15 +105,25 @@ def build_company(
 # --------------------------------------------------------------------------- #
 # valuations
 # --------------------------------------------------------------------------- #
+def _null_if_nan(x: float) -> float | None:
+    """NaN (incomputable: no shares, no price, g >= WACC) is stored as NULL."""
+    return None if x != x else x
+
+
+def _nan_if_null(x: float | None) -> float:
+    """NULL restores as NaN so the domain semantics survive the round trip."""
+    return float("nan") if x is None else float(x)
+
+
 def valuation_row(result: DCFResult, created_at: datetime) -> dict[str, Any]:
     return {
         "ticker": result.fin.ticker,
         "created_at": created_at.isoformat(),
         "wacc": result.wacc,
-        "enterprise_value": result.enterprise_value,
-        "equity_value": result.equity_value,
-        "fair_value_per_share": result.fair_value_per_share,
-        "upside": result.upside,
+        "enterprise_value": _null_if_nan(result.enterprise_value),
+        "equity_value": _null_if_nan(result.equity_value),
+        "fair_value_per_share": _null_if_nan(result.fair_value_per_share),
+        "upside": _null_if_nan(result.upside),
         "assumptions_json": json.dumps(asdict(result.assumptions)),
         "projection_json": serialize_projection(result.projection),
         "warnings_json": json.dumps(result.warnings),
@@ -148,10 +158,10 @@ def build_valuation_record(row: sqlite3.Row) -> ValuationRecord:
         ticker=row["ticker"],
         created_at=datetime.fromisoformat(row["created_at"]),
         wacc=float(row["wacc"]),
-        enterprise_value=float(row["enterprise_value"]),
-        equity_value=float(row["equity_value"]),
-        fair_value_per_share=float(row["fair_value_per_share"]),
-        upside=float(row["upside"]),
+        enterprise_value=_nan_if_null(row["enterprise_value"]),
+        equity_value=_nan_if_null(row["equity_value"]),
+        fair_value_per_share=_nan_if_null(row["fair_value_per_share"]),
+        upside=_nan_if_null(row["upside"]),
         assumptions=Assumptions(**json.loads(row["assumptions_json"])),
         projection=deserialize_projection(row["projection_json"]),
         warnings=list(json.loads(row["warnings_json"])),

@@ -41,10 +41,10 @@ CREATE TABLE valuations (
     ticker               TEXT NOT NULL REFERENCES companies(ticker) ON DELETE CASCADE,
     created_at           TEXT NOT NULL,
     wacc                 REAL NOT NULL,
-    enterprise_value     REAL NOT NULL,
-    equity_value         REAL NOT NULL,
-    fair_value_per_share REAL NOT NULL,
-    upside               REAL NOT NULL,
+    enterprise_value     REAL,               -- NULL = NaN (incomputable, e.g. g >= WACC)
+    equity_value         REAL,               -- NULL = NaN
+    fair_value_per_share REAL,               -- NULL = NaN (no share count)
+    upside               REAL,               -- NULL = NaN (no market price)
     assumptions_json     TEXT NOT NULL,
     projection_json      TEXT NOT NULL,
     warnings_json        TEXT NOT NULL DEFAULT '[]'

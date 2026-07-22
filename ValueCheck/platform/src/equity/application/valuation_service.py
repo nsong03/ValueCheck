@@ -7,6 +7,7 @@ port. The result carries the company's full SourceLink audit trail.
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 
 import pandas as pd
@@ -40,11 +41,22 @@ class ValuationService:
         ticker: str,
         assumptions: Assumptions | None = None,
         *,
+        overrides: Mapping[str, float | int] | None = None,
         refresh: bool = False,
     ) -> ValuationOutcome:
-        """Run one DCF for `ticker`; assumptions default to seeding from the
-        company's own history (the analyst overrides them per request)."""
+        """Run one DCF for `ticker`.
+
+        Assumptions resolve in this order: an explicit `assumptions` object
+        wins; else seed from the company's history and apply any partial
+        `overrides` (the API's edit-one-lever-and-revalue flow); else pure
+        seeded defaults. Override keys must be Assumptions field names —
+        the API schema guarantees this before they reach here.
+        """
         fin = self._ingestion.get_company(ticker, refresh=refresh)
+        if assumptions is None and overrides:
+            assumptions = Assumptions.seed_from(fin)
+            for key, val in overrides.items():  # keys pre-validated by the API schema
+                setattr(assumptions, key, val)
         dcf = DCF(fin, assumptions)  # None -> Assumptions.seed_from(fin)
         result = dcf.value()
         record = self._valuations.save(result)
