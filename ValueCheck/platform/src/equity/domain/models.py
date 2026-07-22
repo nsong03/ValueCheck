@@ -22,6 +22,35 @@ def _empty_series() -> pd.Series[float]:
 
 
 @dataclass(frozen=True, slots=True)
+class MarketSnapshot:
+    """Point-in-time capital-structure data from a market provider.
+
+    All monetary values in millions USD to match `CompanyFinancials`; shares
+    in millions. Lifted from the seed core (seed/market.py); `source_url` is
+    new so the domain stays provider-agnostic — the adapter supplies the
+    audit-trail URL instead of the domain hardcoding one.
+    """
+
+    price: float
+    shares_out: float  # millions
+    total_debt: float  # millions
+    cash: float  # millions
+    beta: float
+    currency: str = "USD"
+    as_of: str = ""  # ISO date
+    provider: str = ""
+    source_url: str = ""  # where a human can verify these numbers
+    note: str = ""  # e.g. "beta defaulted to 1.0 (missing)"
+
+    def is_complete(self) -> bool:
+        """True when every field is present and not NaN (x == x filters NaN)."""
+        return all(
+            v is not None and v == v
+            for v in (self.price, self.shares_out, self.total_debt, self.cash, self.beta)
+        )
+
+
+@dataclass(frozen=True, slots=True)
 class SourceLink:
     """A verifiable pointer back to the original document for one datum.
 
@@ -95,6 +124,37 @@ class CompanyFinancials:
     def avg_ebit_margin(self) -> float:
         """Mean EBIT margin over years where both EBIT and revenue exist."""
         return metrics.average_ratio(self.ebit, self.revenue)
+
+    # ---- market enrichment (pure: data in, mutation, no I/O) ----------------
+    def apply_market_snapshot(self, snap: MarketSnapshot, overwrite: bool = False) -> None:
+        """Populate capital-structure fields from a market snapshot.
+
+        Only fills fields that are unset (0.0) unless `overwrite=True`, so a
+        value deliberately entered by hand is preserved. Beta is special-cased:
+        0.0/1.0 count as "unset" because 1.0 is the class default, not data.
+        Appends a SourceLink so market inputs are as auditable as filings
+        (seed/market.py `enrich`, minus the provider call — that I/O lives
+        behind the MarketDataProvider port).
+        """
+
+        def maybe(attr: str, val: float) -> None:
+            if overwrite or not getattr(self, attr):
+                setattr(self, attr, val)
+
+        maybe("price", snap.price)
+        maybe("shares_out", snap.shares_out)
+        maybe("total_debt", snap.total_debt)
+        maybe("cash", snap.cash)
+        if overwrite or self.beta in (0.0, 1.0):
+            self.beta = snap.beta
+
+        self.sources.append(
+            SourceLink(
+                label=f"Market data ({snap.provider}, {snap.as_of})",
+                url=snap.source_url,
+                accession=snap.provider,
+            )
+        )
 
     def historicals_table(self) -> pd.DataFrame:
         """Human-readable historicals summary (rounded), for display layers."""
