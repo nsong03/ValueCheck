@@ -20,6 +20,7 @@ from equity.adapters.persistence.sqlite import (
     SQLiteValuationRepo,
 )
 from equity.application.ingestion_service import IngestionService
+from equity.application.research_service import ResearchService
 from equity.application.valuation_service import ValuationService
 from equity.config import Settings, get_settings
 from equity.logging import get_logger
@@ -44,6 +45,7 @@ class Container:
     market: MarketDataProvider
     ingestion: IngestionService
     valuation: ValuationService
+    research: ResearchService
 
 
 def build_container(
@@ -73,6 +75,7 @@ def build_container(
 
     ingestion = IngestionService(companies, filings, market)
     valuation = ValuationService(ingestion, valuations)
+    research = ResearchService(notes, tags)
 
     log.info(
         "container.built",
@@ -91,4 +94,5 @@ def build_container(
         market=market,
         ingestion=ingestion,
         valuation=valuation,
+        research=research,
     )

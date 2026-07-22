@@ -266,3 +266,29 @@ class SQLiteTagRepo:
                    ORDER BY t.name"""
             ).fetchall()
         return [r["name"] for r in rows]
+
+    def merge(self, source: str, target: str) -> int:
+        """Fold `source` into `target` in one transaction (see TagRepo port)."""
+        with self._db.connection() as conn:
+            src = conn.execute("SELECT id FROM tags WHERE name = ?", (source,)).fetchone()
+            if src is None:
+                return 0
+            src_id = int(src["id"])
+            affected = conn.execute(
+                "SELECT COUNT(DISTINCT note_id) AS n FROM note_tags WHERE tag_id = ?",
+                (src_id,),
+            ).fetchone()["n"]
+            if affected:
+                conn.execute("INSERT OR IGNORE INTO tags (name) VALUES (?)", (target,))
+                dst_id = int(
+                    conn.execute("SELECT id FROM tags WHERE name = ?", (target,)).fetchone()["id"]
+                )
+                # retag; OR IGNORE covers notes already carrying the target
+                conn.execute(
+                    "INSERT OR IGNORE INTO note_tags (note_id, tag_id)"
+                    " SELECT note_id, ? FROM note_tags WHERE tag_id = ?",
+                    (dst_id, src_id),
+                )
+                conn.execute("DELETE FROM note_tags WHERE tag_id = ?", (src_id,))
+            conn.execute("DELETE FROM tags WHERE id = ?", (src_id,))
+        return int(affected)

@@ -18,7 +18,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from equity import __version__
-from equity.api.routers import companies, valuations
+from equity.api.routers import companies, notes, tags, valuations
 from equity.application.container import Container, build_container
 from equity.config import Settings, get_settings
 from equity.errors import EquityError
@@ -96,6 +96,8 @@ def create_app(settings: Settings | None = None, container: Container | None = N
 
     app.include_router(companies.router)
     app.include_router(valuations.router)
+    app.include_router(notes.router)
+    app.include_router(tags.router)
 
     return app
 

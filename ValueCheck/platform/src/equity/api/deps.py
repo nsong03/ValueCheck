@@ -10,6 +10,7 @@ from fastapi import Request
 
 from equity.application.container import Container
 from equity.application.ingestion_service import IngestionService
+from equity.application.research_service import ResearchService
 from equity.application.valuation_service import ValuationService
 from equity.ports.repository import CompanyRepo
 
@@ -31,3 +32,7 @@ def get_valuation(request: Request) -> ValuationService:
 
 def get_companies(request: Request) -> CompanyRepo:
     return get_container(request).companies
+
+
+def get_research(request: Request) -> ResearchService:
+    return get_container(request).research

@@ -15,6 +15,10 @@ export type SensitivityOut = components["schemas"]["SensitivityOut"];
 export type SourceLinkOut = components["schemas"]["SourceLinkOut"];
 export type ValuationResponse = components["schemas"]["ValuationResponse"];
 export type ValuationRecordSummary = components["schemas"]["ValuationRecordSummary"];
+export type NoteIn = components["schemas"]["NoteIn"];
+export type NoteUpdate = components["schemas"]["NoteUpdate"];
+export type NoteOut = components["schemas"]["NoteOut"];
+export type TagsOut = components["schemas"]["TagsOut"];
 
 const BASE: string = import.meta.env.VITE_API_BASE ?? "/api";
 
@@ -49,6 +53,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     }
     throw new ApiError(code, message, resp.status);
   }
+  if (resp.status === 204) return undefined as T; // no content (delete)
   return (await resp.json()) as T;
 }
 
@@ -68,4 +73,17 @@ export const api = {
 
   valuationHistory: (ticker: string) =>
     request<ValuationRecordSummary[]>(`/companies/${encodeURIComponent(ticker)}/valuations`),
+
+  listNotes: (ticker: string) =>
+    request<NoteOut[]>(`/companies/${encodeURIComponent(ticker)}/notes`),
+
+  createNote: (note: NoteIn) =>
+    request<NoteOut>("/notes", { method: "POST", body: JSON.stringify(note) }),
+
+  updateNote: (id: number, note: NoteUpdate) =>
+    request<NoteOut>(`/notes/${id}`, { method: "PUT", body: JSON.stringify(note) }),
+
+  deleteNote: (id: number) => request<void>(`/notes/${id}`, { method: "DELETE" }),
+
+  listTags: () => request<TagsOut>("/tags"),
 };

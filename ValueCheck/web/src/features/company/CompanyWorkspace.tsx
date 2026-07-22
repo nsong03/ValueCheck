@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useCompany, useValuation } from "../../api/hooks";
 import { ApiError, type AssumptionsIn } from "../../api/client";
 import { fmtMillions, fmtPrice } from "../../lib/format";
+import { NotesSection } from "../notes/NotesSection";
 import { AssumptionsPanel } from "./AssumptionsPanel";
 import { HistoricalsTable } from "./HistoricalsTable";
 import { SensitivityGrid } from "./SensitivityGrid";
@@ -98,6 +99,8 @@ export function CompanyWorkspace({ ticker }: { ticker: string }) {
           )}
         </div>
       </div>
+
+      <NotesSection ticker={ticker} />
     </div>
   );
 }

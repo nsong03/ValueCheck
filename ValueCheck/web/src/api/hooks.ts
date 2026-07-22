@@ -1,7 +1,12 @@
 /** TanStack Query hooks over the typed client. */
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
-import { api, type AssumptionsIn } from "./client";
+import { api, type AssumptionsIn, type NoteIn, type NoteUpdate } from "./client";
 
 export function useCompany(ticker: string | null) {
   return useQuery({
@@ -26,5 +31,50 @@ export function useValuation(ticker: string | null, overrides: AssumptionsIn) {
     placeholderData: keepPreviousData,
     staleTime: 5 * 60_000,
     retry: false,
+  });
+}
+
+// ---- notes + tags ---------------------------------------------------------
+
+export function useNotes(ticker: string) {
+  return useQuery({
+    queryKey: ["notes", ticker],
+    queryFn: () => api.listNotes(ticker),
+    retry: false,
+  });
+}
+
+/** Canonical tag vocabulary; feeds the client-side fuzzy suggest. */
+export function useTags() {
+  return useQuery({
+    queryKey: ["tags"],
+    queryFn: () => api.listTags(),
+    staleTime: 60_000,
+    retry: false,
+  });
+}
+
+export function useSaveNote(ticker: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { id: number | null; note: NoteUpdate }) =>
+      input.id === null
+        ? api.createNote({ ...input.note, ticker } as NoteIn)
+        : api.updateNote(input.id, input.note),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["notes", ticker] });
+      void queryClient.invalidateQueries({ queryKey: ["tags"] });
+    },
+  });
+}
+
+export function useDeleteNote(ticker: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => api.deleteNote(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["notes", ticker] });
+      void queryClient.invalidateQueries({ queryKey: ["tags"] });
+    },
   });
 }

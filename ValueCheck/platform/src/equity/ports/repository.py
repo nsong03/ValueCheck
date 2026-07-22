@@ -60,8 +60,14 @@ class NoteRepo(Protocol):
 
 
 class TagRepo(Protocol):
-    """Read side of the tag vocabulary (write happens via NoteRepo.save)."""
+    """The tag vocabulary (individual tag writes happen via NoteRepo.save)."""
 
     def all_tags(self) -> list[str]:
-        """Every distinct tag name, sorted, for autocomplete (Phase 7)."""
+        """Every distinct tag name in use, sorted, for autocomplete."""
+        ...
+
+    def merge(self, source: str, target: str) -> int:
+        """Retag every note carrying `source` to `target` (atomically) and
+        drop `source` from the vocabulary. Returns the number of notes whose
+        tags changed; 0 when `source` is unused/unknown."""
         ...
