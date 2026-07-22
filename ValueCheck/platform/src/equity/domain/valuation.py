@@ -8,11 +8,34 @@ engine and locked by BUILD_SPEC §5.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from datetime import datetime
 
 import pandas as pd
 
 from equity.domain.assumptions import Assumptions
 from equity.domain.models import CompanyFinancials
+
+
+@dataclass(frozen=True, slots=True)
+class ValuationRecord:
+    """A persisted valuation: one DCF run with identity and a timestamp.
+
+    `DCFResult` is the engine's in-memory output and deliberately carries the
+    full `CompanyFinancials`; a stored record only references the ticker. The
+    repository (Phase 3) maps between the two.
+    """
+
+    id: int
+    ticker: str
+    created_at: datetime
+    wacc: float
+    enterprise_value: float
+    equity_value: float
+    fair_value_per_share: float
+    upside: float
+    assumptions: Assumptions
+    projection: pd.DataFrame
+    warnings: list[str] = field(default_factory=list)
 
 
 @dataclass(frozen=True, slots=True)
