@@ -35,16 +35,19 @@ _MM = 1_000_000.0
 class EdgarFilingsSource:
     """Live SEC XBRL via edgartools. Implements ports.filings.FilingsProvider."""
 
-    def __init__(self, identity: str) -> None:
-        if not identity or not identity.strip():
+    def __init__(self, identity: str | None) -> None:
+        # Validation happens at fetch time, not construction: the composition
+        # root must be buildable without an identity so cached companies keep
+        # working fully offline (cache-first, BUILD_SPEC Phase 4).
+        self._identity = (identity or "").strip()
+
+    def fetch(self, ticker: str, years: int = 5) -> CompanyFinancials:
+        if not self._identity:
             raise UpstreamError(
                 "SEC EDGAR requires an identity (set EQUITY_EDGAR_IDENTITY, "
                 'e.g. "Jane Doe jane@example.com")',
                 code=ErrorCode.FILINGS_UNAVAILABLE,
             )
-        self._identity = identity
-
-    def fetch(self, ticker: str, years: int = 5) -> CompanyFinancials:
         import edgar  # lazy: module import must not require network/identity
 
         edgar.set_identity(self._identity)

@@ -263,9 +263,10 @@ class TestFetch:
 
 
 class TestErrors:
-    def test_missing_identity_raises(self) -> None:
+    def test_missing_identity_raises_at_fetch_not_construction(self) -> None:
+        source = EdgarFilingsSource("")  # construction fine (cache-first boot)
         with pytest.raises(UpstreamError) as ei:
-            EdgarFilingsSource("")
+            source.fetch("TEST")
         assert ei.value.code is ErrorCode.FILINGS_UNAVAILABLE
 
     def test_company_lookup_failure_raises_upstream(self, monkeypatch: pytest.MonkeyPatch) -> None:
