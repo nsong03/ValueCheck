@@ -4,6 +4,249 @@
  */
 
 export interface paths {
+    "/analyses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Analyses */
+        get: operations["list_analyses_analyses_get"];
+        put?: never;
+        /** Create Analysis */
+        post: operations["create_analysis_analyses_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/analyses/for-company/{ticker}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Analyses For Company
+         * @description What models have I built that touch this stock?
+         */
+        get: operations["analyses_for_company_analyses_for_company__ticker__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/analyses/for-reference/{reference_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Analyses For Reference
+         * @description What models have I built that cite this book/article/PDF?
+         */
+        get: operations["analyses_for_reference_analyses_for_reference__reference_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/analyses/{analysis_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Analysis */
+        get: operations["get_analysis_analyses__analysis_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Analysis */
+        delete: operations["delete_analysis_analyses__analysis_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Analysis */
+        patch: operations["update_analysis_analyses__analysis_id__patch"];
+        trace?: never;
+    };
+    "/analyses/{analysis_id}/companies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Companies */
+        get: operations["list_companies_analyses__analysis_id__companies_get"];
+        put?: never;
+        /** Add Company */
+        post: operations["add_company_analyses__analysis_id__companies_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/analyses/{analysis_id}/companies/{ticker}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove Company */
+        delete: operations["remove_company_analyses__analysis_id__companies__ticker__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/analyses/{analysis_id}/links": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Links */
+        get: operations["list_links_analyses__analysis_id__links_get"];
+        put?: never;
+        /** Add Link */
+        post: operations["add_link_analyses__analysis_id__links_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/analyses/{analysis_id}/links/{linked_analysis_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove Link */
+        delete: operations["remove_link_analyses__analysis_id__links__linked_analysis_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/analyses/{analysis_id}/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Notes For Analysis
+         * @description Notes for one analysis (a model/study, the balcony), newest first.
+         */
+        get: operations["list_notes_for_analysis_analyses__analysis_id__notes_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/analyses/{analysis_id}/references": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List References */
+        get: operations["list_references_analyses__analysis_id__references_get"];
+        put?: never;
+        /** Add Reference */
+        post: operations["add_reference_analyses__analysis_id__references_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/analyses/{analysis_id}/references/{reference_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove Reference */
+        delete: operations["remove_reference_analyses__analysis_id__references__reference_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/attributes/definitions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Definitions
+         * @description Every known attribute key, for the Attributes panel + screener columns.
+         */
+        get: operations["list_definitions_attributes_definitions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/attributes/definitions/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update Definition
+         * @description Curate a key: rename its label, promote text -> scale, or attach an
+         *     enum's allowed values/colors (e.g. `status`).
+         */
+        patch: operations["update_definition_attributes_definitions__key__patch"];
+        trace?: never;
+    };
     "/companies": {
         parameters: {
             query?: never;
@@ -33,6 +276,51 @@ export interface paths {
          * @description Normalized financials, cache-first (fetches live on first sight).
          */
         get: operations["get_company_companies__ticker__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/companies/{ticker}/attributes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Current Attributes
+         * @description Current (latest) value per key for one company.
+         */
+        get: operations["current_attributes_companies__ticker__attributes_get"];
+        put?: never;
+        /**
+         * Set Attribute
+         * @description Record one attribute value, from a note save or a direct grid edit.
+         */
+        post: operations["set_attribute_companies__ticker__attributes_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/companies/{ticker}/attributes/{key}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Attribute History
+         * @description The full timeline for one (ticker, key) dimension, newest first —
+         *     e.g. how a moat score evolved as the thesis was revisited.
+         */
+        get: operations["attribute_history_companies__ticker__attributes__key__history_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -175,6 +463,153 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/references": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List References
+         * @description Every tracked reference, ordered by collection then title.
+         */
+        get: operations["list_references_references_get"];
+        put?: never;
+        /** Create Reference */
+        post: operations["create_reference_references_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/references/scan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Scan References
+         * @description Walk the configured library path for PDFs not yet tracked (also runs
+         *     once automatically at server startup); a no-op if unconfigured.
+         */
+        post: operations["scan_references_references_scan_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/references/{reference_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Reference */
+        get: operations["get_reference_references__reference_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Reference */
+        delete: operations["delete_reference_references__reference_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Reference */
+        patch: operations["update_reference_references__reference_id__patch"];
+        trace?: never;
+    };
+    "/references/{reference_id}/file": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Reference File
+         * @description Open the reference: redirects to the URL, or streams the local file.
+         *
+         *     Single-user, local-first, bound to 127.0.0.1 — the same trust boundary
+         *     as your own file explorer, so any local path you've pointed a reference
+         *     at is servable, not just ones under the configured library folder.
+         */
+        get: operations["reference_file_references__reference_id__file_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/references/{reference_id}/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Notes For Reference
+         * @description Notes for one reference (book/PDF/article/webpage), newest first.
+         */
+        get: operations["list_notes_for_reference_references__reference_id__notes_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/screener/columns": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Screener Columns
+         * @description Discovered attribute keys + types, so the frontend can build columns
+         *     for custom dimensions (region, quality scores, status) dynamically.
+         */
+        get: operations["screener_columns_screener_columns_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/screener/rows": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Screener Rows
+         * @description One row per tracked company: financials, latest valuation, tags, and
+         *     current research attributes.
+         */
+        get: operations["screener_rows_screener_rows_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/search": {
         parameters: {
             query?: never;
@@ -253,6 +688,71 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AnalysisCompaniesOut */
+        AnalysisCompaniesOut: {
+            /** Tickers */
+            tickers: string[];
+        };
+        /** AnalysisIn */
+        AnalysisIn: {
+            /**
+             * Kind
+             * @example dcf-variant
+             * @example portfolio
+             * @example correlation-study
+             */
+            kind: string;
+            /**
+             * Summary
+             * @default
+             */
+            summary: string;
+            /** Title */
+            title: string;
+        };
+        /** AnalysisLinksOut */
+        AnalysisLinksOut: {
+            /** Analysis Ids */
+            analysis_ids: number[];
+        };
+        /** AnalysisOut */
+        AnalysisOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Id */
+            id: number;
+            /** Kind */
+            kind: string;
+            /** Summary */
+            summary: string;
+            /** Title */
+            title: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /** AnalysisReferencesOut */
+        AnalysisReferencesOut: {
+            /** Reference Ids */
+            reference_ids: number[];
+        };
+        /**
+         * AnalysisUpdate
+         * @description Every field optional — only supplied fields change.
+         */
+        AnalysisUpdate: {
+            /** Kind */
+            kind?: string | null;
+            /** Summary */
+            summary?: string | null;
+            /** Title */
+            title?: string | null;
+        };
         /**
          * AssumptionsIn
          * @description Partial assumption overrides. Anything omitted seeds from history.
@@ -324,6 +824,112 @@ export interface components {
             /** Terminal Growth */
             terminal_growth: number;
         };
+        /** AttributeDefinitionOut */
+        AttributeDefinitionOut: {
+            /** Allowed Values */
+            allowed_values?: string[] | null;
+            /** Colors */
+            colors?: {
+                [key: string]: string;
+            } | null;
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+            /** Scale Max */
+            scale_max?: number | null;
+            /** Scale Min */
+            scale_min?: number | null;
+            /**
+             * Value Type
+             * @enum {string}
+             */
+            value_type: "text" | "number" | "scale";
+        };
+        /**
+         * AttributeDefinitionPatch
+         * @description Curate an existing key. Every field optional — only supplied fields change.
+         */
+        AttributeDefinitionPatch: {
+            /** Allowed Values */
+            allowed_values?: string[] | null;
+            /** Colors */
+            colors?: {
+                [key: string]: string;
+            } | null;
+            /** Label */
+            label?: string | null;
+            /** Scale Max */
+            scale_max?: number | null;
+            /** Scale Min */
+            scale_min?: number | null;
+            /** Value Type */
+            value_type?: ("text" | "number" | "scale") | null;
+        };
+        /** AttributeHistoryOut */
+        AttributeHistoryOut: {
+            /** Key */
+            key: string;
+            /** Ticker */
+            ticker: string;
+            /** Values */
+            values: components["schemas"]["AttributeValueOut"][];
+        };
+        /**
+         * AttributeValueIn
+         * @description Set one attribute value. `value_type`/`label`/scale bounds only take
+         *     effect the first time `key` is used — an existing key's type is
+         *     authoritative (curate it via PATCH /attributes/definitions/{key}).
+         */
+        AttributeValueIn: {
+            /** Key */
+            key: string;
+            /** Label */
+            label?: string | null;
+            /** Note Id */
+            note_id?: number | null;
+            /** Reason */
+            reason?: string | null;
+            /** Scale Max */
+            scale_max?: number | null;
+            /** Scale Min */
+            scale_min?: number | null;
+            /**
+             * Source
+             * @default grid
+             * @enum {string}
+             */
+            source: "note" | "grid";
+            /** Value */
+            value: string;
+            /** Value Type */
+            value_type?: ("text" | "number" | "scale") | null;
+        };
+        /** AttributeValueOut */
+        AttributeValueOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Id */
+            id: number;
+            /** Key */
+            key: string;
+            /** Note Id */
+            note_id: number | null;
+            /** Reason */
+            reason: string | null;
+            /**
+             * Source
+             * @enum {string}
+             */
+            source: "note" | "grid";
+            /** Ticker */
+            ticker: string;
+            /** Value */
+            value: string;
+        };
         /** CompanyDetail */
         CompanyDetail: {
             /** Avg Ebit Margin */
@@ -362,6 +968,8 @@ export interface components {
         };
         /** GraphEdgeOut */
         GraphEdgeOut: {
+            /** Kind */
+            kind: string;
             /** Source */
             source: string;
             /** Target */
@@ -371,6 +979,8 @@ export interface components {
         };
         /** GraphNodeOut */
         GraphNodeOut: {
+            /** Collection */
+            collection?: string | null;
             /** Id */
             id: string;
             /** Kind */
@@ -429,22 +1039,54 @@ export interface components {
             /** Tax Rate */
             tax_rate?: number | null;
         };
-        /** NoteIn */
+        /** LinkedAnalysisIn */
+        LinkedAnalysisIn: {
+            /** Linked Analysis Id */
+            linked_analysis_id: number;
+        };
+        /**
+         * NoteIn
+         * @description Exactly one of `ticker`/`reference_id`/`analysis_id` must be set — a
+         *     note is about a company, a reference (a book, PDF, or article), or an
+         *     analysis (a model/study), never more than one or none.
+         */
         NoteIn: {
+            /** Analysis Id */
+            analysis_id?: number | null;
             /**
              * Body
              * @default
              */
             body: string;
+            /** Links */
+            links?: components["schemas"]["NoteLinkIn"][];
+            /** Reference Id */
+            reference_id?: number | null;
             /** Tags */
             tags?: string[];
             /** Ticker */
-            ticker: string;
+            ticker?: string | null;
             /** Title */
             title: string;
         };
+        /** NoteLinkIn */
+        NoteLinkIn: {
+            /** Label */
+            label: string;
+            /** Url */
+            url: string;
+        };
+        /** NoteLinkOut */
+        NoteLinkOut: {
+            /** Label */
+            label: string;
+            /** Url */
+            url: string;
+        };
         /** NoteOut */
         NoteOut: {
+            /** Analysis Id */
+            analysis_id: number | null;
             /** Body */
             body: string;
             /**
@@ -454,10 +1096,14 @@ export interface components {
             created_at: string;
             /** Id */
             id: number;
+            /** Links */
+            links: components["schemas"]["NoteLinkOut"][];
+            /** Reference Id */
+            reference_id: number | null;
             /** Tags */
             tags: string[];
             /** Ticker */
-            ticker: string;
+            ticker: string | null;
             /** Title */
             title: string;
             /**
@@ -473,6 +1119,8 @@ export interface components {
              * @default
              */
             body: string;
+            /** Links */
+            links?: components["schemas"]["NoteLinkIn"][];
             /** Tags */
             tags?: string[];
             /** Title */
@@ -505,6 +1153,131 @@ export interface components {
             revenue: number;
             /** Year */
             year: number;
+        };
+        /** ReferenceIdIn */
+        ReferenceIdIn: {
+            /** Reference Id */
+            reference_id: number;
+        };
+        /**
+         * ReferenceIn
+         * @description Manually add a reference (a webpage, book, article, or a local file
+         *     you don't want to wait for a scan to pick up).
+         */
+        ReferenceIn: {
+            /**
+             * Collection
+             * @default
+             */
+            collection: string;
+            /**
+             * Kind
+             * @example webpage
+             * @example book
+             * @example article
+             * @example pdf
+             */
+            kind: string;
+            /**
+             * Location
+             * @description A URL or a local file path.
+             */
+            location: string;
+            /** Title */
+            title: string;
+        };
+        /** ReferenceOut */
+        ReferenceOut: {
+            /**
+             * Added At
+             * Format: date-time
+             */
+            added_at: string;
+            /** Collection */
+            collection: string;
+            /** Id */
+            id: number;
+            /** Kind */
+            kind: string;
+            /** Location */
+            location: string;
+            /** Origin */
+            origin: string;
+            /** Title */
+            title: string;
+        };
+        /** ReferenceScanOut */
+        ReferenceScanOut: {
+            /** Created */
+            created: components["schemas"]["ReferenceOut"][];
+        };
+        /**
+         * ReferenceUpdate
+         * @description Every field optional — only supplied fields change. `location` isn't
+         *     editable here; delete and re-add if a source moved.
+         */
+        ReferenceUpdate: {
+            /** Collection */
+            collection?: string | null;
+            /** Kind */
+            kind?: string | null;
+            /** Title */
+            title?: string | null;
+        };
+        /** ScreenerColumnsOut */
+        ScreenerColumnsOut: {
+            /** Columns */
+            columns: components["schemas"]["AttributeDefinitionOut"][];
+        };
+        /** ScreenerOut */
+        ScreenerOut: {
+            /** Rows */
+            rows: components["schemas"]["ScreenerRowOut"][];
+        };
+        /** ScreenerRowOut */
+        ScreenerRowOut: {
+            /** Attributes */
+            attributes: {
+                [key: string]: components["schemas"]["AttributeValueOut"];
+            };
+            /** Avg Ebit Margin */
+            avg_ebit_margin: number;
+            /** Beta */
+            beta: number;
+            /** Industry */
+            industry: string;
+            latest_valuation: components["schemas"]["ScreenerValuationOut"] | null;
+            /** Market Cap */
+            market_cap: number;
+            /** Name */
+            name: string;
+            /** Net Debt */
+            net_debt: number;
+            /** Note Count */
+            note_count: number;
+            /** Price */
+            price: number;
+            /** Revenue Cagr */
+            revenue_cagr: number;
+            /** Sector */
+            sector: string;
+            /** Tags */
+            tags: string[];
+            /** Ticker */
+            ticker: string;
+        };
+        /** ScreenerValuationOut */
+        ScreenerValuationOut: {
+            /** Created At */
+            created_at: string;
+            /** Fair Value Per Share */
+            fair_value_per_share: number | null;
+            /** Id */
+            id: number;
+            /** Upside */
+            upside: number | null;
+            /** Wacc */
+            wacc: number;
         };
         /** SearchHitOut */
         SearchHitOut: {
@@ -567,6 +1340,11 @@ export interface components {
         TagsOut: {
             /** Tags */
             tags: string[];
+        };
+        /** TickerIn */
+        TickerIn: {
+            /** Ticker */
+            ticker: string;
         };
         /** ValidationError */
         ValidationError: {
@@ -680,6 +1458,584 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    list_analyses_analyses_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnalysisOut"][];
+                };
+            };
+        };
+    };
+    create_analysis_analyses_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AnalysisIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnalysisOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    analyses_for_company_analyses_for_company__ticker__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ticker: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnalysisOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    analyses_for_reference_analyses_for_reference__reference_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reference_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnalysisOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_analysis_analyses__analysis_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                analysis_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnalysisOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_analysis_analyses__analysis_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                analysis_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_analysis_analyses__analysis_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                analysis_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AnalysisUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnalysisOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_companies_analyses__analysis_id__companies_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                analysis_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnalysisCompaniesOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add_company_analyses__analysis_id__companies_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                analysis_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TickerIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    remove_company_analyses__analysis_id__companies__ticker__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                analysis_id: number;
+                ticker: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_links_analyses__analysis_id__links_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                analysis_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnalysisLinksOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add_link_analyses__analysis_id__links_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                analysis_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LinkedAnalysisIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    remove_link_analyses__analysis_id__links__linked_analysis_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                analysis_id: number;
+                linked_analysis_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_notes_for_analysis_analyses__analysis_id__notes_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                analysis_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NoteOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_references_analyses__analysis_id__references_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                analysis_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnalysisReferencesOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add_reference_analyses__analysis_id__references_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                analysis_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReferenceIdIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    remove_reference_analyses__analysis_id__references__reference_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                analysis_id: number;
+                reference_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_definitions_attributes_definitions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttributeDefinitionOut"][];
+                };
+            };
+        };
+    };
+    update_definition_attributes_definitions__key__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AttributeDefinitionPatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttributeDefinitionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_companies_companies_get: {
         parameters: {
             query?: never;
@@ -721,6 +2077,106 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CompanyDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    current_attributes_companies__ticker__attributes_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ticker: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: components["schemas"]["AttributeValueOut"];
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_attribute_companies__ticker__attributes_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ticker: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AttributeValueIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttributeValueOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    attribute_history_companies__ticker__attributes__key__history_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ticker: string;
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttributeHistoryOut"];
                 };
             };
             /** @description Validation Error */
@@ -837,10 +2293,12 @@ export interface operations {
     graph_graph_get: {
         parameters: {
             query?: {
-                /** @description Exact sector filter */
+                /** @description Exact sector filter (companies) */
                 sector?: string | null;
                 /** @description Restrict to these tickers (e.g. a search's impacted set) */
                 tickers?: string[] | null;
+                /** @description Exact collection filter (references) */
+                collection?: string | null;
             };
             header?: never;
             path?: never;
@@ -1012,6 +2470,276 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_references_references_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferenceOut"][];
+                };
+            };
+        };
+    };
+    create_reference_references_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReferenceIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferenceOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    scan_references_references_scan_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferenceScanOut"];
+                };
+            };
+        };
+    };
+    get_reference_references__reference_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reference_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferenceOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_reference_references__reference_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reference_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_reference_references__reference_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reference_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReferenceUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferenceOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reference_file_references__reference_id__file_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reference_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_notes_for_reference_references__reference_id__notes_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reference_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NoteOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    screener_columns_screener_columns_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScreenerColumnsOut"];
+                };
+            };
+        };
+    };
+    screener_rows_screener_rows_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScreenerOut"];
                 };
             };
         };

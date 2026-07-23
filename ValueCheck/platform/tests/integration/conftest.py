@@ -7,9 +7,12 @@ from pathlib import Path
 import pytest
 
 from equity.adapters.persistence.sqlite import (
+    SQLiteAnalysisRepo,
+    SQLiteAttributeRepo,
     SQLiteCompanyRepo,
     SQLiteDatabase,
     SQLiteNoteRepo,
+    SQLiteReferenceRepo,
     SQLiteTagRepo,
     SQLiteValuationRepo,
 )
@@ -40,3 +43,18 @@ def note_repo(db: SQLiteDatabase) -> SQLiteNoteRepo:
 @pytest.fixture
 def tag_repo(db: SQLiteDatabase) -> SQLiteTagRepo:
     return SQLiteTagRepo(db)
+
+
+@pytest.fixture
+def attribute_repo(db: SQLiteDatabase) -> SQLiteAttributeRepo:
+    return SQLiteAttributeRepo(db)
+
+
+@pytest.fixture
+def reference_repo(db: SQLiteDatabase) -> SQLiteReferenceRepo:
+    return SQLiteReferenceRepo(db)
+
+
+@pytest.fixture
+def analysis_repo(db: SQLiteDatabase) -> SQLiteAnalysisRepo:
+    return SQLiteAnalysisRepo(db)

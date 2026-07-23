@@ -5,6 +5,7 @@ import { ApiError, type AssumptionsIn } from "../../api/client";
 import { fmtMillions, fmtPrice } from "../../lib/format";
 import { NotesSection } from "../notes/NotesSection";
 import { AssumptionsPanel } from "./AssumptionsPanel";
+import { AttributesPanel } from "./AttributesPanel";
 import { HistoricalsTable } from "./HistoricalsTable";
 import { SensitivityGrid } from "./SensitivityGrid";
 import { ValuationResult } from "./ValuationResult";
@@ -100,7 +101,8 @@ export function CompanyWorkspace({ ticker }: { ticker: string }) {
         </div>
       </div>
 
-      <NotesSection ticker={ticker} />
+      <NotesSection subject={{ kind: "company", ticker }} />
+      <AttributesPanel ticker={ticker} />
     </div>
   );
 }

@@ -67,6 +67,15 @@ class Settings(BaseSettings):
         description="Default timeout for outbound market/filings HTTP calls.",
     )
 
+    # -- knowledge library (Phase 9b) -----------------------------------------
+    reference_library_path: Path | None = Field(
+        default=None,
+        description=(
+            "Root folder to scan for PDFs (recursively; organized into "
+            "collections by subfolder). Unset = scanning disabled."
+        ),
+    )
+
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:

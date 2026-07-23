@@ -42,14 +42,16 @@ class SearchResultOut(BaseModel):
 class GraphNodeOut(BaseModel):
     id: str
     label: str
-    kind: str  # "company" | "tag"
-    sector: str | None = None
+    kind: str  # "company" | "reference" | "analysis" | "tag"
+    sector: str | None = None  # companies only
+    collection: str | None = None  # references only
 
 
 class GraphEdgeOut(BaseModel):
     source: str
     target: str
     weight: int
+    kind: str  # "tag" (incidental, weighted) | "link" (explicit constituent, weight 1)
 
 
 class GraphOut(BaseModel):
@@ -60,10 +62,13 @@ class GraphOut(BaseModel):
     def from_domain(cls, graph: GraphData) -> GraphOut:
         return cls(
             nodes=[
-                GraphNodeOut(id=n.id, label=n.label, kind=n.kind, sector=n.sector)
+                GraphNodeOut(
+                    id=n.id, label=n.label, kind=n.kind, sector=n.sector, collection=n.collection
+                )
                 for n in graph.nodes
             ],
             edges=[
-                GraphEdgeOut(source=e.source, target=e.target, weight=e.weight) for e in graph.edges
+                GraphEdgeOut(source=e.source, target=e.target, weight=e.weight, kind=e.kind)
+                for e in graph.edges
             ],
         )

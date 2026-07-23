@@ -59,15 +59,76 @@ CREATE TABLE valuations (
 );
 CREATE INDEX idx_valuations_ticker ON valuations(ticker, created_at DESC);
 
-CREATE TABLE notes (
+-- The knowledge library (0004): books, articles, PDFs, webpages.
+CREATE TABLE reference_items (
     id          INTEGER PRIMARY KEY,
-    ticker      TEXT NOT NULL,
+    kind        TEXT NOT NULL,
     title       TEXT NOT NULL,
-    body        TEXT NOT NULL DEFAULT '',
+    location    TEXT NOT NULL,
+    collection  TEXT NOT NULL DEFAULT '',
+    origin      TEXT NOT NULL CHECK (origin IN ('manual', 'scan')),
+    added_at    TEXT NOT NULL
+);
+CREATE UNIQUE INDEX idx_reference_items_location ON reference_items(location);
+CREATE INDEX idx_reference_items_collection ON reference_items(collection);
+
+-- The balcony (0005): analyses (financial models, portfolio constructions,
+-- correlation studies) with EXPLICIT links to companies/references/other
+-- analyses — structural facts about the analysis, distinct from tag-based
+-- (incidental) association.
+CREATE TABLE analyses (
+    id          INTEGER PRIMARY KEY,
+    kind        TEXT NOT NULL,
+    title       TEXT NOT NULL,
+    summary     TEXT NOT NULL DEFAULT '',
     created_at  TEXT NOT NULL,
     updated_at  TEXT NOT NULL
 );
+
+-- No ticker FK (same freedom as `notes`).
+CREATE TABLE analysis_companies (
+    analysis_id INTEGER NOT NULL REFERENCES analyses(id) ON DELETE CASCADE,
+    ticker      TEXT NOT NULL,
+    PRIMARY KEY (analysis_id, ticker)
+);
+CREATE INDEX idx_analysis_companies_ticker ON analysis_companies(ticker);
+
+CREATE TABLE analysis_references (
+    analysis_id  INTEGER NOT NULL REFERENCES analyses(id) ON DELETE CASCADE,
+    reference_id INTEGER NOT NULL REFERENCES reference_items(id) ON DELETE CASCADE,
+    PRIMARY KEY (analysis_id, reference_id)
+);
+CREATE INDEX idx_analysis_references_reference ON analysis_references(reference_id);
+
+-- Directed: `analysis_id` references `linked_analysis_id`.
+CREATE TABLE analysis_links (
+    analysis_id        INTEGER NOT NULL REFERENCES analyses(id) ON DELETE CASCADE,
+    linked_analysis_id INTEGER NOT NULL REFERENCES analyses(id) ON DELETE CASCADE,
+    PRIMARY KEY (analysis_id, linked_analysis_id),
+    CHECK (analysis_id <> linked_analysis_id)
+);
+
+-- A note attaches to a company, a reference, or an analysis (0005: exactly
+-- one of the three is set).
+CREATE TABLE notes (
+    id           INTEGER PRIMARY KEY,
+    ticker       TEXT,
+    reference_id INTEGER REFERENCES reference_items(id) ON DELETE CASCADE,
+    analysis_id  INTEGER REFERENCES analyses(id) ON DELETE CASCADE,
+    title        TEXT NOT NULL,
+    body         TEXT NOT NULL DEFAULT '',
+    links_json   TEXT NOT NULL DEFAULT '[]',
+    created_at   TEXT NOT NULL,
+    updated_at   TEXT NOT NULL,
+    CHECK (
+        (CASE WHEN ticker IS NOT NULL THEN 1 ELSE 0 END) +
+        (CASE WHEN reference_id IS NOT NULL THEN 1 ELSE 0 END) +
+        (CASE WHEN analysis_id IS NOT NULL THEN 1 ELSE 0 END) = 1
+    )
+);
 CREATE INDEX idx_notes_ticker ON notes(ticker, created_at DESC);
+CREATE INDEX idx_notes_reference ON notes(reference_id, created_at DESC);
+CREATE INDEX idx_notes_analysis ON notes(analysis_id, created_at DESC);
 
 CREATE TABLE tags (
     id    INTEGER PRIMARY KEY,
@@ -103,3 +164,30 @@ CREATE TRIGGER notes_fts_au AFTER UPDATE ON notes BEGIN
         VALUES ('delete', old.id, old.title, old.body);
     INSERT INTO notes_fts(rowid, title, body) VALUES (new.id, new.title, new.body);
 END;
+
+-- Research attributes (0003): typed, namespaced company facts (region,
+-- custom sector, quality scores, status), with full append-only history.
+CREATE TABLE attribute_definitions (
+    key                 TEXT PRIMARY KEY,
+    label               TEXT NOT NULL,
+    value_type          TEXT NOT NULL DEFAULT 'text'
+                            CHECK (value_type IN ('text', 'number', 'scale')),
+    scale_min           REAL,
+    scale_max           REAL,
+    allowed_values_json TEXT,
+    colors_json         TEXT,
+    created_at          TEXT NOT NULL
+);
+
+-- No ticker FK (same freedom as `notes`); `key` references a definition.
+CREATE TABLE company_attribute_history (
+    id          INTEGER PRIMARY KEY,
+    ticker      TEXT NOT NULL,
+    key         TEXT NOT NULL REFERENCES attribute_definitions(key) ON DELETE CASCADE,
+    value       TEXT NOT NULL,
+    source      TEXT NOT NULL CHECK (source IN ('note', 'grid')),
+    note_id     INTEGER REFERENCES notes(id) ON DELETE SET NULL,
+    reason      TEXT,
+    created_at  TEXT NOT NULL
+);
+CREATE INDEX idx_attr_history_ticker_key ON company_attribute_history(ticker, key, created_at DESC);

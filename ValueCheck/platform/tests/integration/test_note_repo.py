@@ -5,14 +5,18 @@ from __future__ import annotations
 import pytest
 
 from equity.adapters.persistence.sqlite import (
+    SQLiteAnalysisRepo,
     SQLiteCompanyRepo,
     SQLiteNoteRepo,
+    SQLiteReferenceRepo,
     SQLiteTagRepo,
     SQLiteValuationRepo,
 )
+from equity.domain.analysis import Analysis
 from equity.domain.dcf import DCF
 from equity.domain.models import CompanyFinancials
-from equity.domain.research import Note
+from equity.domain.references import Reference
+from equity.domain.research import Note, NoteLink
 from equity.errors import PersistenceError
 
 pytestmark = pytest.mark.integration
@@ -69,6 +73,25 @@ class TestNoteRoundTrip:
         assert note_repo.get(stored.id) is None
         assert note_repo.delete(stored.id) is False
 
+    def test_links_round_trip(self, note_repo: SQLiteNoteRepo) -> None:
+        links = [
+            NoteLink(label="Source A", url="https://example.com/a"),
+            NoteLink(label="My PDF", url="C:/refs/notes.pdf"),
+        ]
+        stored = note_repo.save(Note(ticker="DEMO", title="T", body="", links=links))
+        assert stored.links == links
+        loaded = note_repo.get(stored.id) if stored.id is not None else None
+        assert loaded is not None
+        assert loaded.links == links
+
+    def test_update_replaces_links(self, note_repo: SQLiteNoteRepo) -> None:
+        stored = note_repo.save(
+            Note(ticker="DEMO", title="T", body="", links=[NoteLink(label="old", url="u1")])
+        )
+        stored.links = [NoteLink(label="new", url="u2")]
+        updated = note_repo.save(stored)
+        assert updated.links == [NoteLink(label="new", url="u2")]
+
 
 class TestTags:
     def test_all_tags_distinct_sorted(
@@ -91,6 +114,63 @@ class TestTags:
 
     def test_no_tags_empty(self, tag_repo: SQLiteTagRepo) -> None:
         assert tag_repo.all_tags() == []
+
+
+class TestReferenceScopedNotes:
+    """A note attaches to a company OR a reference (Phase 9b)."""
+
+    def test_save_and_list_for_reference(
+        self, note_repo: SQLiteNoteRepo, reference_repo: SQLiteReferenceRepo
+    ) -> None:
+        ref = reference_repo.save(
+            Reference(kind="book", title="A Book", location="https://example.com/book")
+        )
+        assert ref.id is not None
+        a = note_repo.save(Note(reference_id=ref.id, title="a", body="", tags=["x"]))
+        b = note_repo.save(Note(reference_id=ref.id, title="b", body=""))
+        assert a.ticker is None
+        assert a.reference_id == ref.id
+
+        listed = note_repo.list_for_reference(ref.id)
+        assert [n.id for n in listed] == [b.id, a.id]  # newest first
+
+    def test_deleting_reference_cascades_its_notes(
+        self, note_repo: SQLiteNoteRepo, reference_repo: SQLiteReferenceRepo
+    ) -> None:
+        ref = reference_repo.save(Reference(kind="pdf", title="P", location="C:/refs/p.pdf"))
+        assert ref.id is not None
+        note = note_repo.save(Note(reference_id=ref.id, title="n", body=""))
+        reference_repo.delete(ref.id)
+        assert note.id is not None
+        assert note_repo.get(note.id) is None  # cascaded away with the reference
+
+
+class TestAnalysisScopedNotes:
+    """A note attaches to a company, a reference, or an analysis (Phase 9c)."""
+
+    def test_save_and_list_for_analysis(
+        self, note_repo: SQLiteNoteRepo, analysis_repo: SQLiteAnalysisRepo
+    ) -> None:
+        an = analysis_repo.save(Analysis(kind="portfolio", title="Core"))
+        assert an.id is not None
+        a = note_repo.save(Note(analysis_id=an.id, title="a", body="", tags=["x"]))
+        b = note_repo.save(Note(analysis_id=an.id, title="b", body=""))
+        assert a.ticker is None
+        assert a.reference_id is None
+        assert a.analysis_id == an.id
+
+        listed = note_repo.list_for_analysis(an.id)
+        assert [n.id for n in listed] == [b.id, a.id]  # newest first
+
+    def test_deleting_analysis_cascades_its_notes(
+        self, note_repo: SQLiteNoteRepo, analysis_repo: SQLiteAnalysisRepo
+    ) -> None:
+        an = analysis_repo.save(Analysis(kind="portfolio", title="Core"))
+        assert an.id is not None
+        note = note_repo.save(Note(analysis_id=an.id, title="n", body=""))
+        analysis_repo.delete(an.id)
+        assert note.id is not None
+        assert note_repo.get(note.id) is None  # cascaded away with the analysis
 
 
 class TestPhase3Acceptance:

@@ -1,14 +1,16 @@
 import { useState } from "react";
 
 import type { NoteOut } from "../../api/client";
-import { useDeleteNote, useNotes, useSaveNote, useTags } from "../../api/hooks";
+import { useDeleteNoteFor, useNotesFor, useSaveNoteFor, useTags, type NoteSubject } from "../../api/hooks";
 import { NoteEditor } from "./NoteEditor";
 
-export function NotesSection({ ticker }: { ticker: string }) {
-  const notes = useNotes(ticker);
+/** Notes on a company, a reference (book/PDF/article), or an analysis — same
+ * editor, same tag vocabulary, same list, regardless of subject. */
+export function NotesSection({ subject }: { subject: NoteSubject }) {
+  const notes = useNotesFor(subject);
   const tags = useTags();
-  const save = useSaveNote(ticker);
-  const remove = useDeleteNote(ticker);
+  const save = useSaveNoteFor(subject);
+  const remove = useDeleteNoteFor(subject);
   // null = closed, "new" = creating, NoteOut = editing that note
   const [editing, setEditing] = useState<"new" | NoteOut | null>(null);
 
@@ -52,7 +54,7 @@ export function NotesSection({ ticker }: { ticker: string }) {
           Couldn&apos;t load notes: {String(notes.error)}
         </div>
       ) : notes.data.length === 0 && editing === null ? (
-        <p className="subtle">No notes yet — capture your thesis alongside the numbers.</p>
+        <p className="subtle">No notes yet — capture your thinking alongside the numbers.</p>
       ) : (
         <ul className="note-list">
           {notes.data.map((note) => (
@@ -73,6 +75,21 @@ export function NotesSection({ ticker }: { ticker: string }) {
                 </span>
               </div>
               {note.body && <p className="note-body">{note.body}</p>}
+              {note.links.length > 0 && (
+                <div className="note-links">
+                  {note.links.map((link, i) => (
+                    <a
+                      key={`${link.url}-${i}`}
+                      href={link.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="link-chip readonly"
+                    >
+                      {link.label}
+                    </a>
+                  ))}
+                </div>
+              )}
               <div className="note-meta">
                 {note.tags.map((tag) => (
                   <span key={tag} className="tag-chip readonly">

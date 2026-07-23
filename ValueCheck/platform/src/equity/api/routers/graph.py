@@ -16,11 +16,16 @@ router = APIRouter(prefix="/graph", tags=["graph"])
 @router.get("", response_model=GraphOut)
 def graph(
     service: Annotated[GraphService, Depends(get_graph)],
-    sector: Annotated[str | None, Query(description="Exact sector filter")] = None,
+    sector: Annotated[str | None, Query(description="Exact sector filter (companies)")] = None,
     tickers: Annotated[
         list[str] | None,
         Query(description="Restrict to these tickers (e.g. a search's impacted set)"),
     ] = None,
+    collection: Annotated[
+        str | None, Query(description="Exact collection filter (references)")
+    ] = None,
 ) -> GraphOut:
     """Nodes+edges for the research graph, optionally filtered."""
-    return GraphOut.from_domain(service.build(sector=sector, tickers=tickers))
+    return GraphOut.from_domain(
+        service.build(sector=sector, tickers=tickers, collection=collection)
+    )

@@ -5,8 +5,9 @@ import type { GraphOut } from "../../api/client";
 export interface ForceNode {
   id: string;
   name: string;
-  kind: "company" | "tag";
+  kind: "company" | "reference" | "analysis" | "tag";
   sector: string | null;
+  collection: string | null;
   val: number; // node size hint
 }
 
@@ -14,11 +15,23 @@ export interface ForceLink {
   source: string;
   target: string;
   weight: number;
+  kind: "tag" | "link";
 }
 
 export interface ForceData {
   nodes: ForceNode[];
   links: ForceLink[];
+}
+
+function labelFor(kind: ForceNode["kind"], id: string, label: string): string {
+  switch (kind) {
+    case "company":
+      return `${id} — ${label}`;
+    case "tag":
+      return `#${label}`;
+    default:
+      return label;
+  }
 }
 
 export function mapGraph(data: GraphOut): ForceData {
@@ -30,11 +43,17 @@ export function mapGraph(data: GraphOut): ForceData {
   return {
     nodes: data.nodes.map((n) => ({
       id: n.id,
-      name: n.kind === "company" ? `${n.id} — ${n.label}` : `#${n.label}`,
-      kind: n.kind === "company" ? "company" : "tag",
+      name: labelFor(n.kind as ForceNode["kind"], n.id, n.label),
+      kind: n.kind as ForceNode["kind"],
       sector: n.sector ?? null,
+      collection: n.collection ?? null,
       val: 1 + (degree.get(n.id) ?? 0),
     })),
-    links: data.edges.map((e) => ({ source: e.source, target: e.target, weight: e.weight })),
+    links: data.edges.map((e) => ({
+      source: e.source,
+      target: e.target,
+      weight: e.weight,
+      kind: e.kind as ForceLink["kind"],
+    })),
   };
 }

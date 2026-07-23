@@ -2,27 +2,40 @@ import { useMemo, useState } from "react";
 import ForceGraph2D from "react-force-graph-2d";
 
 import { useGraph } from "../../api/hooks";
-import { mapGraph, type ForceNode } from "./mapGraph";
+import { mapGraph, type ForceLink, type ForceNode } from "./mapGraph";
+
+const NODE_COLOR: Record<ForceNode["kind"], string> = {
+  company: "#1d4ed8",
+  reference: "#d97706",
+  analysis: "#7c3aed",
+  tag: "#94a3b8",
+};
 
 /** Basic force-directed render of the research graph. Deliberately minimal —
- * the exact visualization is a deferred product decision (BUILD_SPEC Phase 8);
- * this proves the data layer end to end. */
+ * the exact visualization is a deferred product decision; this proves the
+ * data layer end to end for all four node kinds. */
 export function GraphView({
   impacted,
   onOpenCompany,
+  onOpenReference,
+  onOpenAnalysis,
 }: {
   impacted: string[] | null;
   onOpenCompany: (ticker: string) => void;
+  onOpenReference: (id: number) => void;
+  onOpenAnalysis: (id: number) => void;
 }) {
   const [sector, setSector] = useState("");
+  const [collection, setCollection] = useState("");
   const [useImpacted, setUseImpacted] = useState(impacted !== null);
 
   const filters = useMemo(
     () => ({
       ...(sector.trim() ? { sector: sector.trim() } : {}),
+      ...(collection.trim() ? { collection: collection.trim() } : {}),
       ...(useImpacted && impacted && impacted.length > 0 ? { tickers: impacted } : {}),
     }),
-    [sector, useImpacted, impacted],
+    [sector, collection, useImpacted, impacted],
   );
   const graph = useGraph(filters);
   const data = useMemo(() => (graph.data ? mapGraph(graph.data) : null), [graph.data]);
@@ -36,6 +49,12 @@ export function GraphView({
           onChange={(e) => setSector(e.target.value)}
           placeholder="Filter by sector (exact)"
           aria-label="Sector filter"
+        />
+        <input
+          value={collection}
+          onChange={(e) => setCollection(e.target.value)}
+          placeholder="Filter by collection (exact)"
+          aria-label="Collection filter"
         />
         {impacted !== null && (
           <label className="graph-toggle">
@@ -66,17 +85,25 @@ export function GraphView({
             height={520}
             nodeLabel="name"
             nodeVal="val"
-            nodeColor={(node) => ((node as ForceNode).kind === "company" ? "#1d4ed8" : "#f59e0b")}
-            linkWidth={(link) => Math.min(4, (link as { weight?: number }).weight ?? 1)}
-            linkColor={() => "#cbd5e1"}
+            nodeColor={(node) => NODE_COLOR[(node as ForceNode).kind]}
+            linkWidth={(link) => {
+              const l = link as ForceLink;
+              return l.kind === "link" ? 3 : Math.min(4, l.weight);
+            }}
+            linkColor={(link) => ((link as ForceLink).kind === "link" ? "#7c3aed" : "#cbd5e1")}
+            linkLineDash={(link) => ((link as ForceLink).kind === "tag" ? [2, 2] : [])}
             onNodeClick={(node) => {
               const n = node as ForceNode;
               if (n.kind === "company") onOpenCompany(n.id);
+              else if (n.kind === "reference") onOpenReference(Number(n.id.split(":")[1]));
+              else if (n.kind === "analysis") onOpenAnalysis(Number(n.id.split(":")[1]));
             }}
           />
           <p className="subtle">
-            <span className="legend-dot company" /> company · <span className="legend-dot tag" />{" "}
-            tag — click a company to open its workspace
+            <span className="legend-dot company" /> company · <span className="legend-dot reference" />{" "}
+            reference · <span className="legend-dot analysis" /> analysis ·{" "}
+            <span className="legend-dot tag" /> tag — dashed = shared tag, solid purple = explicit
+            link — click a node to open it
           </p>
         </div>
       )}

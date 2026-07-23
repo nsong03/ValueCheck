@@ -17,9 +17,12 @@ from typing import Any
 
 import pandas as pd
 
+from equity.domain.analysis import Analysis
 from equity.domain.assumptions import Assumptions
+from equity.domain.attributes import AttributeDefinition, AttributeValue
 from equity.domain.models import CompanyFinancials, SourceLink
-from equity.domain.research import Note
+from equity.domain.references import Reference
+from equity.domain.research import Note, NoteLink
 from equity.domain.valuation import DCFResult, ValuationRecord
 
 # metric column value <-> CompanyFinancials series attribute (same names)
@@ -171,13 +174,131 @@ def build_valuation_record(row: sqlite3.Row) -> ValuationRecord:
 # --------------------------------------------------------------------------- #
 # notes
 # --------------------------------------------------------------------------- #
+def links_to_json(links: list[NoteLink]) -> str:
+    return json.dumps([{"label": link.label, "url": link.url} for link in links])
+
+
+def links_from_json(text: str) -> list[NoteLink]:
+    return [NoteLink(label=d["label"], url=d["url"]) for d in json.loads(text)]
+
+
 def build_note(row: sqlite3.Row, tags: list[str]) -> Note:
     return Note(
         id=int(row["id"]),
         ticker=row["ticker"],
+        reference_id=(int(row["reference_id"]) if row["reference_id"] is not None else None),
+        analysis_id=(int(row["analysis_id"]) if row["analysis_id"] is not None else None),
         title=row["title"],
         body=row["body"],
         tags=tags,
+        links=links_from_json(row["links_json"]),
+        created_at=datetime.fromisoformat(row["created_at"]),
+        updated_at=datetime.fromisoformat(row["updated_at"]),
+    )
+
+
+# --------------------------------------------------------------------------- #
+# reference library
+# --------------------------------------------------------------------------- #
+def reference_row(ref: Reference, added_at: datetime) -> dict[str, Any]:
+    return {
+        "kind": ref.kind,
+        "title": ref.title,
+        "location": ref.location,
+        "collection": ref.collection,
+        "origin": ref.origin,
+        "added_at": added_at.isoformat(),
+    }
+
+
+def build_reference(row: sqlite3.Row) -> Reference:
+    return Reference(
+        id=int(row["id"]),
+        kind=row["kind"],
+        title=row["title"],
+        location=row["location"],
+        collection=row["collection"],
+        origin=row["origin"],
+        added_at=datetime.fromisoformat(row["added_at"]),
+    )
+
+
+# --------------------------------------------------------------------------- #
+# attribute definitions + history
+# --------------------------------------------------------------------------- #
+def definition_row(d: AttributeDefinition, created_at: datetime) -> dict[str, Any]:
+    return {
+        "key": d.key,
+        "label": d.label,
+        "value_type": d.value_type,
+        "scale_min": d.scale_min,
+        "scale_max": d.scale_max,
+        "allowed_values_json": json.dumps(d.allowed_values)
+        if d.allowed_values is not None
+        else None,
+        "colors_json": json.dumps(d.colors) if d.colors is not None else None,
+        "created_at": created_at.isoformat(),
+    }
+
+
+def build_definition(row: sqlite3.Row) -> AttributeDefinition:
+    return AttributeDefinition(
+        key=row["key"],
+        label=row["label"],
+        value_type=row["value_type"],
+        scale_min=row["scale_min"],
+        scale_max=row["scale_max"],
+        allowed_values=(
+            json.loads(row["allowed_values_json"]) if row["allowed_values_json"] else None
+        ),
+        colors=json.loads(row["colors_json"]) if row["colors_json"] else None,
+    )
+
+
+def attribute_value_row(v: AttributeValue, created_at: datetime) -> dict[str, Any]:
+    return {
+        "ticker": v.ticker,
+        "key": v.key,
+        "value": v.value,
+        "source": v.source,
+        "note_id": v.note_id,
+        "reason": v.reason,
+        "created_at": created_at.isoformat(),
+    }
+
+
+def build_attribute_value(row: sqlite3.Row) -> AttributeValue:
+    return AttributeValue(
+        id=int(row["id"]),
+        ticker=row["ticker"],
+        key=row["key"],
+        value=row["value"],
+        source=row["source"],
+        note_id=int(row["note_id"]) if row["note_id"] is not None else None,
+        reason=row["reason"],
+        created_at=datetime.fromisoformat(row["created_at"]),
+    )
+
+
+# --------------------------------------------------------------------------- #
+# analyses (the balcony)
+# --------------------------------------------------------------------------- #
+def analysis_row(a: Analysis, now: datetime) -> dict[str, Any]:
+    return {
+        "kind": a.kind,
+        "title": a.title,
+        "summary": a.summary,
+        "created_at": (a.created_at or now).isoformat(),
+        "updated_at": now.isoformat(),
+    }
+
+
+def build_analysis(row: sqlite3.Row) -> Analysis:
+    return Analysis(
+        id=int(row["id"]),
+        kind=row["kind"],
+        title=row["title"],
+        summary=row["summary"],
         created_at=datetime.fromisoformat(row["created_at"]),
         updated_at=datetime.fromisoformat(row["updated_at"]),
     )

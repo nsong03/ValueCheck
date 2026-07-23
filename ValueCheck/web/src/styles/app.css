@@ -656,6 +656,282 @@ button.ghost.danger {
   background: #1d4ed8;
 }
 
+.legend-dot.reference {
+  background: #d97706;
+}
+
+.legend-dot.analysis {
+  background: #7c3aed;
+}
+
 .legend-dot.tag {
-  background: #f59e0b;
+  background: #94a3b8;
+}
+
+/* ---- links (note inline citations) ---- */
+.links-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.link-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.link-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: #fdf2e9;
+  color: #b45309;
+  border-radius: 999px;
+  padding: 0.1rem 0.6rem;
+  font-size: 0.78rem;
+  text-decoration: none;
+}
+
+.link-chip button {
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.link-chip.readonly {
+  background: var(--bg);
+  color: var(--subtle);
+  border: 1px solid var(--line);
+}
+
+.note-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.35rem 0;
+}
+
+.link-add-row {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.link-add-row input {
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+  flex: 1;
+  min-width: 8rem;
+}
+
+/* ---- screener ---- */
+.screener-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.screener-head h3 {
+  margin: 0;
+  flex: 1;
+}
+
+.screener-head input,
+.screener-head select {
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.screener-table-wrap {
+  overflow-x: auto;
+}
+
+.screener-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.83rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.screener-table th,
+.screener-table td {
+  padding: 0.35rem 0.6rem;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+.screener-table thead th {
+  color: var(--subtle);
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  user-select: none;
+}
+
+.screener-tags {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.screener-cell-edit {
+  background: none;
+  border: 1px dashed transparent;
+  color: var(--ink);
+  padding: 0.1rem 0.4rem;
+  font: inherit;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.screener-cell-edit:hover {
+  border-color: var(--line);
+}
+
+.screener-cell-input {
+  width: 6rem;
+  padding: 0.15rem 0.35rem;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  font: inherit;
+}
+
+.positive {
+  color: var(--gain);
+}
+
+.negative {
+  color: var(--loss);
+}
+
+/* ---- library + balcony ---- */
+.reference-add-form {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.reference-add-form input,
+.reference-add-form select {
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.reference-add-form input {
+  flex: 1;
+  min-width: 8rem;
+}
+
+.reference-collection {
+  margin-bottom: 0.75rem;
+}
+
+.reference-collection h4 {
+  margin: 0 0 0.3rem;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--subtle);
+}
+
+.reference-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.reference-list button.ghost {
+  width: 100%;
+  text-align: left;
+}
+
+.constituent-block {
+  margin-bottom: 1rem;
+}
+
+.constituent-block h4 {
+  margin: 0 0 0.4rem;
+  font-size: 0.85rem;
+}
+
+/* ---- attributes ---- */
+.attribute-list {
+  list-style: none;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.attribute-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.attribute-key {
+  min-width: 9rem;
+  font-size: 0.85rem;
+  color: var(--subtle);
+}
+
+.attribute-value-editor {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.attribute-value-editor input,
+.attribute-value-editor select {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+  width: 8rem;
+}
+
+.attribute-add-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  padding-top: 0.6rem;
+}
+
+.attribute-add-row input,
+.attribute-add-row select {
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.attribute-history {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg);
+  border-radius: 6px;
+  font-size: 0.83rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }

@@ -18,7 +18,18 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from equity import __version__
-from equity.api.routers import companies, graph, notes, search, tags, valuations
+from equity.api.routers import (
+    analyses,
+    attributes,
+    companies,
+    graph,
+    notes,
+    references,
+    screener,
+    search,
+    tags,
+    valuations,
+)
 from equity.application.container import Container, build_container
 from equity.config import Settings, get_settings
 from equity.errors import EquityError
@@ -61,6 +72,13 @@ def create_app(settings: Settings | None = None, container: Container | None = N
     async def lifespan(app_: FastAPI) -> AsyncIterator[None]:
         if app_.state.container is None:
             app_.state.container = build_container(settings)
+        built: Container = app_.state.container
+        try:
+            scanned = built.reference_service.scan()
+            if scanned:
+                log.info("references.startup_scan", created=len(scanned))
+        except Exception:
+            log.warning("references.startup_scan_failed", exc_info=True)
         log.info("app.startup", app=settings.app_name, environment=settings.environment)
         yield
         log.info("app.shutdown", app=settings.app_name)
@@ -100,6 +118,10 @@ def create_app(settings: Settings | None = None, container: Container | None = N
     app.include_router(tags.router)
     app.include_router(search.router)
     app.include_router(graph.router)
+    app.include_router(attributes.router)
+    app.include_router(screener.router)
+    app.include_router(references.router)
+    app.include_router(analyses.router)
 
     return app
 

@@ -64,6 +64,11 @@ class NotFoundError(EquityError):
     http_status = HTTPStatus.NOT_FOUND
 
 
+class ConflictError(EquityError):
+    code = ErrorCode.CONFLICT
+    http_status = HTTPStatus.CONFLICT
+
+
 class DomainError(EquityError):
     """Base for pure-domain rule violations."""
 

@@ -58,6 +58,72 @@ class TestNotesCrud:
         assert resp.json()["error"]["code"] == "validation_error"
 
 
+class TestReferenceScopedNotes:
+    """A note attaches to a company OR a reference (Phase 9b)."""
+
+    def make_reference(self, client: TestClient) -> int:
+        resp = client.post(
+            "/references",
+            json={"kind": "book", "title": "A Book", "location": "https://example.com/book"},
+        )
+        assert resp.status_code == 201, resp.text
+        ref_id: int = resp.json()["id"]
+        return ref_id
+
+    def test_create_and_list_reference_notes(self, client: TestClient) -> None:
+        ref_id = self.make_reference(client)
+        resp = client.post(
+            "/notes",
+            json={"reference_id": ref_id, "title": "Ch. 1", "body": "Thoughts.", "tags": ["value"]},
+        )
+        assert resp.status_code == 201, resp.text
+        body = resp.json()
+        assert body["ticker"] is None
+        assert body["reference_id"] == ref_id
+
+        listed = client.get(f"/references/{ref_id}/notes")
+        assert [n["id"] for n in listed.json()] == [body["id"]]
+
+    def test_neither_subject_is_a_validation_error(self, client: TestClient) -> None:
+        resp = client.post("/notes", json={"title": "t", "body": "", "tags": []})
+        assert resp.status_code == 422
+        assert resp.json()["error"]["code"] == "validation_error"
+
+    def test_both_subjects_is_a_validation_error(self, client: TestClient) -> None:
+        ref_id = self.make_reference(client)
+        resp = client.post(
+            "/notes",
+            json={"ticker": "DEMO", "reference_id": ref_id, "title": "t", "body": "", "tags": []},
+        )
+        assert resp.status_code == 422
+        assert resp.json()["error"]["code"] == "validation_error"
+
+    def test_links_round_trip(self, client: TestClient) -> None:
+        created = make_note(
+            client,
+            links=[{"label": "Damodaran on WACC", "url": "https://example.com/wacc"}],
+        )
+        assert created["links"] == [
+            {"label": "Damodaran on WACC", "url": "https://example.com/wacc"}
+        ]
+        got = client.get(f"/notes/{created['id']}")
+        assert got.json()["links"] == created["links"]
+
+    def test_update_replaces_links(self, client: TestClient) -> None:
+        created = make_note(client)
+        resp = client.put(
+            f"/notes/{created['id']}",
+            json={
+                "title": "T",
+                "body": "",
+                "tags": [],
+                "links": [{"label": "new", "url": "https://new.example"}],
+            },
+        )
+        assert resp.status_code == 200
+        assert resp.json()["links"] == [{"label": "new", "url": "https://new.example"}]
+
+
 class TestTags:
     def test_vocabulary_for_autocomplete(self, client: TestClient) -> None:
         assert client.get("/tags").json() == {"tags": []}
